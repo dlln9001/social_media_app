@@ -1,3 +1,5 @@
+import SideBar from "./SideBar"
+import '../App.css'
 
 
 function Home() {
@@ -6,7 +8,10 @@ function Home() {
         window.location.pathname = '/'
     }
     return(
-        <button onClick={logout}> Logout </button>
+        <div className="homepage">
+            <SideBar />
+            <button onClick={logout} style={{'height': '30px', 'marginLeft': '700px'}}> Logout </button>
+        </div>
     )
 }
 

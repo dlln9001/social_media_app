@@ -4,6 +4,7 @@ import { useState } from 'react'
 import UserSignup from './components/UserSignup';
 import UserLogin from './components/UserLogin';
 import Home from './components/Home';
+import Profile from './components/Profile';
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route path="signup" element={<UserSignup/>} />
         <Route path='/' element={<UserLogin/>}/>
         <Route path='home' element={<Home />}/>
+        <Route path='profile' element={<Profile />}/>
       </Routes>
     </BrowserRouter>
     </>
