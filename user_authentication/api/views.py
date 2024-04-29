@@ -5,6 +5,7 @@ from rest_framework.authtoken.models import Token
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
+from profile_app.models import UserProfile
 
 
 # tests connection
@@ -24,6 +25,9 @@ def signup(request):
         user.set_password(request.data['password'])
         user.save()
         token = Token.objects.create(user=user)
+        # Makes the user profile
+        userProfile = UserProfile(user=user)
+        userProfile.save()
         return Response({'token': token.key, 'user': serializer.data, 'detail': 'good'})
     return Response({'username': 'A user with that username already exists.'})
 

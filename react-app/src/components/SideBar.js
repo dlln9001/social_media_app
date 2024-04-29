@@ -4,6 +4,7 @@ function SideBar() {
     return (
         <div className="sideBarDiv">
             <a className='sideBarElement' href='/home'>Home</a>
+            <a className='sideBarElement'>Search</a>
             <a className='sideBarElement'>Create</a>
             <a className='sideBarElement' href='/profile'>Profile</a>
         </div>

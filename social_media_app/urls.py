@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('user_authentication.api.urls')),
     path('', TemplateView.as_view(template_name='index.html')),
+    path('profile/', include('profile_app.api.urls')),
 ]

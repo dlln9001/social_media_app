@@ -29,10 +29,16 @@ body {
     border-radius: 5px;
     border: 1px solid #D3D3D3;
     width: 250px;
+
+}
+
+.userField:focus {
+    border: 1px solid #778899;
+    outline: none;
 }
 
 .submitLogin {
-    margin: 10px;
+    margin: 10px;   
     width: 92%;
     padding: 6px;
     background-color: #00BFFF;
@@ -76,4 +82,10 @@ body {
 .homepage {
     min-height: 100vh;
     display: flex;
+}
+
+
+.profileOverview {
+    margin-left: 50%;
+    margin-top: 1%;
 }
