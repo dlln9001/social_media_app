@@ -66,16 +66,44 @@ body {
     padding-top: 60px;
 }
 
+.smallSideBarDiv {
+    height: 100%;
+    width: fit-content;
+    position: fixed;
+    padding-top: 60px;
+}
+
 .sideBarElement {
-    display: block;
+    display: flex;
     margin: 10px;
-    padding: 15px;
     width: 265px;
     border-radius: 10px;
     cursor: pointer;
+    border-right: 1px solid transparent;
 }
 
+.barIcon {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+
 .sideBarElement:hover {
+    background-color: #F5F5F5;
+}
+
+.smallSideBarElement {
+    display: flex;
+    border-radius: 10px;
+    cursor: pointer;
+    height: 50px;
+    width: 50px;
+    margin: 10px;
+}
+
+.smallSideBarElement:hover {
     background-color: #F5F5F5;
 }
 
@@ -88,4 +116,38 @@ body {
 .profileOverview {
     margin-left: 50%;
     margin-top: 1%;
+}
+
+.search {
+    border-right: 1px solid #D3D3D3;
+    width: 500px;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    position: absolute;
+}
+
+.searchPart {
+    margin-left: 14%;
+    width: 100%;
+}
+
+.searchInput {
+    padding: 15px;
+    font-size: 15px;
+    width: 350px;
+    border-radius: 10px;
+    background-color: #F3F3F3;
+    outline: none;
+    border: 0px;
+    margin: 20px;
+}
+
+.searchedUser {
+    padding: 20px;
+    cursor: pointer;
+}
+
+.searchedUser:hover{
+    background-color: #F3F3F3;
 }

@@ -39,7 +39,6 @@ function UserLogin() {
     }, [])
 
     let userData = JSON.parse(localStorage.getItem('userData'))
-    console.log('userData: ', JSON.parse(localStorage.getItem('userData')))
     return (
         <>
             <div className='loginBlock'>

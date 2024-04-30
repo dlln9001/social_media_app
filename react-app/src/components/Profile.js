@@ -1,4 +1,5 @@
 import SideBar from "./SideBar"
+import '../App.css'
 
 
 function Profile() {
@@ -19,7 +20,7 @@ function Profile() {
                 window.location.reload()
             })
     }
-    
+
     if (!localStorage.getItem('extraUserData')){
         fetchExtra()
     }
