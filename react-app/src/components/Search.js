@@ -1,9 +1,6 @@
 import '../App.css'
 import { useState, useEffect } from 'react'
-import { GoHome } from "react-icons/go";
-import { IoSearchOutline } from "react-icons/io5";
-import { IoCreateOutline } from "react-icons/io5";
-import { CgProfile } from "react-icons/cg";
+import SmallSideBar from './SmallSideBar'
 
 
 function Search () {
@@ -34,12 +31,7 @@ function Search () {
     console.log(searchedUsers.Users)
     return (
         <div className='search'>
-            <div className="sideBarDiv">
-                <a className='smallSideBarElement' href='/home'><div className='barIcon'><GoHome size={30}/></div></a>
-                <a className='smallSideBarElement'><div className='barIcon'><IoSearchOutline size={30}/></div></a>
-                <a className='smallSideBarElement'><div className='barIcon'><IoCreateOutline size={30}/></div></a>
-                <a className='smallSideBarElement' href='/profile'><div className='barIcon'><CgProfile size={30}/></div></a>
-            </div>
+            <SmallSideBar />
             <div className='searchPart'>
                 <div style={{borderBottom: '1px solid #D3D3D3', paddingBottom: "5px"}}>
                     <h2 style={{margin: '20px'}}>Search</h2>

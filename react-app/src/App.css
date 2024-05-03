@@ -151,3 +151,219 @@ body {
 .searchedUser:hover{
     background-color: #F3F3F3;
 }
+
+.createPostDiv {
+    background-color: white;
+    width: 700px;
+    height: 730px;
+    position: fixed;
+    top: 10%;
+    left: 33%;
+    z-index: 2;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.changeBack {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: black;
+    opacity: 0.6;
+    z-index: 1;
+}
+
+.createPostTxt {
+    margin-left: auto;
+    padding-bottom: 10px;
+    border-bottom:1px solid #D3D3D3;
+    margin-bottom: 0px;
+}
+
+.closeCreatePost {
+    z-index: 2;
+    margin: 10px;
+    position: fixed;
+    right: 0px;
+    cursor: pointer;
+}
+
+.createPostImage {
+    width: 150px;
+    height: 150px;
+    position: absolute;
+    top: 35%;
+    left: 40%;
+}
+
+.fileInput {
+    display: none;
+}
+
+.imageInput {
+    cursor: pointer;
+    background-color: #00BFFF;
+    color: white;
+    padding: 8px;
+    padding-left: 40px;
+    padding-right: 40px;
+    border-radius: 10px;
+    position: absolute;
+    bottom: 35%;
+    left: 35%;
+}
+
+.imagePreview1to1 {
+    min-width: 700px;
+    min-height: 685px;
+    max-width: 700px;
+    max-height: 685px;
+    position: relative;
+    object-fit: cover;
+    aspect-ratio: 1/1;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.imagePreviewOriginal {
+    max-width: 700px;
+    max-height: 685px;
+    position: absolute;
+    object-fit: contain;
+    top: 53.16%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.submitImagePost {
+    background-color: inherit;
+    border: none;
+    cursor: pointer;
+    color: #00BFFF;
+    font-size: 16px;
+    position: absolute;
+    top: 0%;
+    right: 0%;
+    margin: 10px;
+    margin-top: 14px;
+}
+
+.submitImagePost:hover {
+    color: #1E90FF;
+}
+
+.selectAspectRatio {
+    position: absolute;
+    bottom: 2%;
+    left: 2%;
+    margin: 5px;
+    background-color: white;
+    font-size: 30px;
+    padding: 5px;
+    border-radius: 100%;
+    opacity: 0.9;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.aspectRatioDiv {
+    background-color: rgba(0,0,0,0.6);
+    color: white;
+    position: absolute;
+    bottom: 65px;
+    left: 20px;
+    border-radius: 10px;
+    width: 120px;
+    text-align: left;
+}
+
+.ratioOriginalTxt {
+    border-bottom:2px solid #D3D3D3;
+    padding: 10px;
+    cursor: pointer;
+    margin: 0px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.ratio1to1Txt {
+    padding: 10px;
+    cursor: pointer;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin: 0px;
+}
+
+.oneToOneBox {
+    font-size: 25px;
+    position: absolute;
+    margin-left: 10px;
+    bottom: 15px;
+}
+
+.originalBox {
+    font-size: 25px;
+    margin-left: 10px;
+    position: absolute;
+    top: 15px;
+}
+
+.postsPreviewSection {
+    border-top:1px solid #D3D3D3;
+    position: absolute;
+    right: 18%;
+    top: 45%;
+    height: fit-content;
+    width: 920px;
+}
+
+.PostsSelection {
+    display: flex;
+    width: fit-content;
+    padding: 20px;
+    border-top:1px solid black;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.PostsTxt {
+    margin: 0px;
+    padding-left: 5px;
+    font-size: 14px;
+}
+
+.noPostsIcon {
+    font-size: 65px;
+    position: absolute;
+    margin: 10px;
+    margin-left: 20px;
+}
+
+.noPostsYet {
+    position: absolute;
+    top: 150px;
+    left: 46%;
+    width: 150px;
+    height: 100px;
+}
+
+.noPostsTxt {
+    position: absolute;
+    top: 85%;
+    font-size: 20px;
+}
+
+.postsFlexBox{
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 2px;
+}
+
+.imgPreview {
+    height: 298px;
+    width: 298px;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    margin: 3px;
+}

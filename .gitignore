@@ -1,2 +1,3 @@
 social_media_app/settings.py
 *.sqlite3
+media/
