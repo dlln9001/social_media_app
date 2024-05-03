@@ -124,7 +124,7 @@ body {
     height: 100%;
     background-color: white;
     display: flex;
-    position: absolute;
+    position: fixed;
 }
 
 .searchPart {
@@ -227,11 +227,14 @@ body {
 
 .imagePreviewOriginal {
     max-width: 700px;
-    max-height: 685px;
+    max-height: 682px;
+    min-height: 40%;
+    min-width: 100%;
     position: absolute;
     object-fit: contain;
     top: 53.16%;
     left: 50%;
+    border-radius: 5px;
     transform: translate(-50%, -50%);
 }
 
@@ -366,4 +369,55 @@ body {
     aspect-ratio: 1/1;
     object-fit: cover;
     margin: 3px;
+}
+
+.imgPreview:hover {
+    cursor: pointer;
+    filter: brightness(75%);
+}
+
+.selectedImageOneToOne {
+    object-fit: cover;
+    aspect-ratio: 1/1;
+    width: 800px;
+    height: 800px;
+    display: block;
+
+}
+
+.selectedImageOriginal {
+    object-fit: contain;
+    display: block;
+    max-width: 800px;
+    background-color: white;
+    width: auto;
+    height: 800px;
+
+}
+
+.selectedImageContainer {
+    max-height: 900px;
+    box-sizing: border-box;
+    display: flex;
+    z-index: 2;
+    position: fixed;
+    top: 7%;
+    left: 25%;
+}
+
+.selectedImgSide {
+    background-color: white;
+    width: 430px;
+    height: 800px;
+    position: relative;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.imageOptionsIcon {
+    position: absolute;
+    right: 0%;
+    margin: 20px;
+    cursor: pointer;
+    font-size: 18px;
 }
