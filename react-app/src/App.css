@@ -112,12 +112,6 @@ body {
     display: flex;
 }
 
-
-.profileOverview {
-    margin-left: 50%;
-    margin-top: 1%;
-}
-
 .search {
     border-right: 1px solid #D3D3D3;
     width: 500px;
@@ -454,4 +448,66 @@ body {
 
 .cancelImageOptions:hover {
     background-color: #F3F3F3;
+}
+
+.profileOverview {
+    margin-left: 38%;
+    margin-top: 3%;
+    display: flex;
+}
+
+.userPfp {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 100%;
+    margin-right: 100px; 
+    cursor: pointer;   
+}
+
+.profileOverviewNums {
+    display: flex;
+}
+
+.profileOverviewNum {
+    margin-right: 40px;
+}
+
+.pfpOptions {
+    background-color: white;
+    z-index: 2;
+    position: fixed;
+    text-align: center;
+    border-radius: 10px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.pfpOptionsTxt {
+    padding: 18px;
+    width: 400px;
+    margin: 0px;
+    border-top: 1px solid #D3D3D3;
+    cursor: pointer;
+}
+
+.pfpRemoveCurrentPhoto {
+    margin: 0px;
+    color: red;
+    font-weight: bold;
+}
+
+.pfpImageInputLabel {
+    display: block;
+    cursor: pointer;
+    padding: 18px;
+    font-weight: bold;
+}
+
+.pfpOptionsForm {
+    width: 100%;
+    margin: 0px;
+    border-top: 1px solid #D3D3D3;
+    cursor: pointer;
 }
