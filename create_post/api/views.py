@@ -15,3 +15,10 @@ def create_post(request):
     newPost = ImagePost(aspect_ratio=aspect_ratio_setting, FK_Image_User=request.user, image=image_file)
     newPost.save()
     return Response({'response': 'ImageSaved'})
+
+
+@api_view(["GET", "POST"])
+def delete_post(request):
+    selected_post = ImagePost.objects.get(FK_Image_User=request.user, image=request.data['post_url'])
+    selected_post.delete()
+    return Response({'response': 'ImageDeleted'})

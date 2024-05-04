@@ -421,3 +421,37 @@ body {
     cursor: pointer;
     font-size: 18px;
 }
+
+.imageOptions {
+    position: absolute;
+    top: 3%;
+    right: 10%;
+    width: 260px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #D3D3D3;
+    cursor: pointer;
+}
+
+.deleteImage {
+    color: red;
+    font-weight: bold;
+    padding: 10px;
+    margin: 0px;
+    border-bottom: 1px solid #D3D3D3;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.deleteImage:hover {
+    background-color: #F3F3F3;
+}
+
+.cancelImageOptions {
+    margin: 0px;
+    padding: 10px;
+}
+
+.cancelImageOptions:hover {
+    background-color: #F3F3F3;
+}

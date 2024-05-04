@@ -7,16 +7,20 @@ import { SlOptions } from "react-icons/sl";
 
 
 function Profile() {
+    const [userToken, setUserToken] = useState(JSON.parse(localStorage.getItem('userData')).token)
     const [userPosts, setUserPosts] = useState(false)
     const [showFullImgVar, setShowFullImageVar] = useState(false)
     const [showImageOptionsVar, setShowImageOptionsVar] = useState(false)
-    // when a user clicks to expand a image, store some data
+    // when a user clicks to expand a image, store some data as these variables
     const [selectedImgUrl, setSelectedImgUrl] = useState('')
     const [selectedImgRatio, setSelectedImgRatio] = useState('')
 
+    if (!localStorage.getItem('extraUserData')){
+        fetchExtra()
+    }
+
     function fetchExtra() {
         // fetches extra data, like followers of the user, etc.
-        const userToken = JSON.parse(localStorage.getItem('userData')).token
         fetch('http://127.0.0.1:8000/profile/', {
             method: 'POST',
             headers: {
@@ -36,7 +40,6 @@ function Profile() {
 
     // fetches all the users' posts
     useEffect(() => {
-        const userToken = JSON.parse(localStorage.getItem('userData')).token
         fetch('http://127.0.0.1:8000/profile/posts/', {
             method: 'POST',
             headers: {'Authorization': `Token ${userToken}`}
@@ -48,9 +51,29 @@ function Profile() {
 
     }, [])
 
+    // sends a request to delete the post
+    function deletePost() {
+        // slice off the "http://127.0.0.1:8000/media/"
+        const sliced_url = selectedImgUrl.slice(28)
+        fetch('http://127.0.0.1:8000/post/delete/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Token ${userToken}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                post_url: sliced_url
+            })
+        })
+        .then(res => res.json())
+        .then((data) => {
+            console.log(data)
+            window.location.reload()
+        })
+    }
+
     // when a user clicks on the image preview, they'll get the full image
     function showFullImg(e) {
-        setShowFullImageVar(true)
         setSelectedImgUrl(e.target.src)
         // so we can name the css class differently
         if (e.target.name === 'one_to_one'){
@@ -60,15 +83,21 @@ function Profile() {
         else{
             setSelectedImgRatio('selectedImageOriginal')
         }
+        setShowFullImageVar(true)
     }
 
     function showImageOptions() {
         setShowImageOptionsVar(true)
     }
 
-    if (!localStorage.getItem('extraUserData')){
-        fetchExtra()
+    // when something is clicked, close out the enlarged image 
+    function closeImage() {
+        setShowFullImageVar(false)
+        setShowImageOptionsVar(false)
+        setSelectedImgRatio('')
+        setSelectedImgUrl('')
     }
+
 
     let user = ''
     if (localStorage.getItem('userData')) {
@@ -121,13 +150,16 @@ function Profile() {
             }
             {showFullImgVar &&
             <>
-                <div className="changeBack" onClick={() => setShowFullImageVar(false)}></div>
+                <div className="changeBack" onClick={closeImage}></div>
                 <div className="selectedImageContainer">
-                    <img src={selectedImgUrl} className={selectedImgRatio} />
+                    <img src={selectedImgUrl} className={selectedImgRatio} onClick={() => setShowImageOptionsVar(false)}/>
                     <div className="selectedImgSide">
                         <SlOptions className="imageOptionsIcon" onClick={showImageOptions}/>
                         { showImageOptionsVar &&
-                            <div>Test</div>
+                            <div className="imageOptions">
+                                <p className="deleteImage" onClick={deletePost}>Delete</p>
+                                <p className="cancelImageOptions" onClick={() => setShowImageOptionsVar(false)} >Cancel</p>
+                            </div>
                         }
                     </div>
                 </div>
