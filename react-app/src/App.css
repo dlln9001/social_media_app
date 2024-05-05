@@ -652,3 +652,30 @@ body {
 .settingsChangePfp:hover {
     background-color: #1E90FF;
 }
+
+.sideBarMore {
+    position: absolute;
+    bottom: 8%;
+}
+
+.moreOptions {
+    box-shadow: 2px 2px 7px #D3D3D3;
+    border-radius: 10px;
+    position: absolute;
+    bottom: 15%;
+    margin-left: 15px;
+    width: 230px;
+    background-color: white;
+}
+
+.moreOptionsElement {
+    padding: 15px;
+    cursor: pointer;
+    margin: 0px;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+.moreOptionsElement:hover {
+    background-color: #F3F3F3;
+}

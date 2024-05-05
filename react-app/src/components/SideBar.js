@@ -5,7 +5,8 @@ import CreatePost from './CreatePost'
 import { GoHome } from "react-icons/go";
 import { IoSearchOutline } from "react-icons/io5";
 import { IoCreateOutline } from "react-icons/io5";
-import { CgProfile } from "react-icons/cg";
+import { RxHamburgerMenu } from "react-icons/rx";
+import MoreOptions from './MoreOptions';
 
 
 function SideBar() {
@@ -13,6 +14,7 @@ function SideBar() {
     const [createPost, setCreatePost] = useState(false)
     const [userToken, setUserToken] = useState(JSON.parse(localStorage.getItem('userData')).token)
     const [userPfp, setUserPfp] = useState('')
+    const [showMoreOptions, setShowMoreOptions] = useState(false)
 
     function openSearch() {
         setShowSearch(true)
@@ -46,6 +48,8 @@ function SideBar() {
                 <a className='sideBarElement' onClick={openSearch}> <div className='barIcon'><IoSearchOutline size={30}/></div> <p>Search</p></a>
                 <a className='sideBarElement' onClick={showCreatePost}> <div className='barIcon'><IoCreateOutline size={30}/></div> <p>Create</p></a> 
                 <a className='sideBarElement' href='/profile'> { userPfp ? <img src={userPfp} alt="" className='barPfp barIcon'/> : <div className='barPfp barIcon'></div>}<p>Profile</p></a>
+                <a className='sideBarElement sideBarMore' onClick={() => setShowMoreOptions(true)}><div className='barIcon'><RxHamburgerMenu size={30}/></div><p>More</p></a>
+                {showMoreOptions && <MoreOptions showMoreOptions={showMoreOptions} setShowMoreOptions={setShowMoreOptions}/>}
             </div>
             {showSearch && <Search />}
             {createPost && <CreatePost createPost={createPost} setCreatePost={setCreatePost}/>}
