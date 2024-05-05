@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { IoMdGrid } from "react-icons/io";
 import { CiCamera } from "react-icons/ci";
 import { SlOptions } from "react-icons/sl";
-import { json } from "react-router-dom";
+import ChangePfp from "./ChangePfp";
 
 
 function Profile() {
@@ -93,30 +93,6 @@ function Profile() {
         setSelectedImgUrl('')
     }
 
-
-    function changePfp(e) {
-        const pfpFile = new FormData()
-        pfpFile.append('pfp_file', e.target.files[0])
-        fetch('http://127.0.0.1:8000/profile/uploadpfp/', {
-            method: 'POST',
-            headers: {'Authorization': `Token ${userToken}`},
-            body: pfpFile,
-        })
-        .then(res => res.json())
-        .then(data => window.location.reload())
-    }
-
-    function removePfp() {
-        fetch('http://127.0.0.1:8000/profile/removepfp/', {
-            method: 'POST',
-            headers: {'Authorization': `Token ${userToken}`},
-        })
-        .then(res => res.json())
-        .then((data) => {
-            window.location.reload()
-        })
-    }
-
     // so we can use user and extra user without getting from local storage every time
     let user = ''
     if (localStorage.getItem('userData')) {
@@ -152,15 +128,7 @@ function Profile() {
                 <img src={userPfp} alt="" className="userPfp" onClick={() => setShowPfpOptionsVar(true)}/>
                 {showPfpOptionsVar &&
                 <>
-                    <div className="pfpOptions">
-                        <p style={{padding: '10px'}}>Change Profile Photo</p>
-                        <form action="" className="pfpOptionsForm">
-                            <label className="pfpImageInputLabel" htmlFor="pfpImageInput"><p style={{color: '#00BFFF', margin: '0px'}}>Upload Photo</p></label>
-                            <input type="file" className="fileInput" accept="image/*" id="pfpImageInput" onChange={changePfp}/>
-                        </form>
-                        <div className="pfpOptionsTxt" onClick={removePfp}><p className="pfpRemoveCurrentPhoto">Remove Current Photo</p></div>
-                        <p className="pfpOptionsTxt" onClick={() => setShowPfpOptionsVar(false)}>Cancel</p>
-                    </div>
+                    <ChangePfp showPfpOptionsVar={showPfpOptionsVar} setShowPfpOptionsVar={setShowPfpOptionsVar}/>
                 </>
                 }
                 <div>

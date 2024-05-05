@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import SideBar from "./SideBar"
-import { json } from "react-router-dom"
+import ChangePfp from "./ChangePfp"
 
 function UserSettings() {
     const [userToken, setUserToken] = useState(JSON.parse(localStorage.getItem('userData')).token)
@@ -11,6 +11,7 @@ function UserSettings() {
     const [nameText, setNameText] = useState(userInfo.user.first_name)
     const [usernameText, setUsernameText] = useState(userInfo.user.username)
     const [usernameTaken, setUsernameTaken] = useState(false)
+    const [showPfpOptionsVar, setShowPfpOptionsVar] = useState(false)
     
     // gets profile picture
     useEffect(() => {
@@ -20,8 +21,13 @@ function UserSettings() {
         })
         .then(res => res.json())
         .then(data => {
-            const absolute_url = 'http://127.0.0.1:8000' + data.userPfp.user_pfp_url
-            setUserPfp(absolute_url)
+            if (data.userPfp.default_pfp === true) {
+                setUserPfp('http://127.0.0.1:8000/media/images/profile_pictures/Default_pfp.png')
+            }
+            else{
+                const absolute_url = 'http://127.0.0.1:8000' + data.userPfp.user_pfp_url
+                setUserPfp(absolute_url)
+            }
         })
     }, [])
 
@@ -60,14 +66,17 @@ function UserSettings() {
     return (
         <>
         <SideBar />
+        {showPfpOptionsVar && <div className="changeBack" onClick={() => setShowPfpOptionsVar(false)}></div>}
+        {showPfpOptionsVar && <ChangePfp showPfpOptionsVar={showPfpOptionsVar} setShowPfpOptionsVar={setShowPfpOptionsVar}/>}
         <div className="editProfilePage">
             <h2>Edit Profile</h2>
             <div className="settingsProfileContainer">
-                <img src={userPfp} alt="" className="settingsPfp"/>
+                <img src={userPfp} alt="" className="settingsPfp" onClick={() => setShowPfpOptionsVar(true)}/>
                 <div>
                     <p className="settingsUsernameOverview">{userInfo.user.username}</p>
                     <p className="settingsNameOverview">{userInfo.user.first_name}</p>
                 </div>
+                <button className="settingsChangePfp" onClick={() => setShowPfpOptionsVar(true)}>Change Photo</button>
             </div>
             <form action="" onSubmit={submitProfile}>
                 <h4>Bio</h4>

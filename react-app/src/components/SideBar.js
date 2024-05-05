@@ -29,8 +29,13 @@ function SideBar() {
         })
         .then(res => res.json())
         .then(data => {
-            const absolute_url = 'http://127.0.0.1:8000' + data.userPfp.user_pfp_url
-            setUserPfp(absolute_url)
+            if (data.userPfp.default_pfp === true) {
+                setUserPfp('http://127.0.0.1:8000/media/images/profile_pictures/Default_pfp.png')
+            }
+            else {
+                const absolute_url = 'http://127.0.0.1:8000' + data.userPfp.user_pfp_url
+                setUserPfp(absolute_url)
+            }
         })
     }, [])
 
