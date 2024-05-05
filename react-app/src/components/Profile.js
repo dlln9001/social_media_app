@@ -18,29 +18,6 @@ function Profile() {
     const [selectedImgUrl, setSelectedImgUrl] = useState('')
     const [selectedImgRatio, setSelectedImgRatio] = useState('')
 
-    if (!localStorage.getItem('extraUserData')){
-        fetchExtra()
-    }
-
-    function fetchExtra() {
-        // fetches extra data, like followers of the user, etc.
-        fetch('http://127.0.0.1:8000/profile/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${userToken}`
-            }
-        })
-            .then(res => res.json())
-            .then(data => {
-                localStorage.setItem('extraUserData', JSON.stringify(data))
-                window.location.reload()
-            })
-            .catch(error => error)
-        
-
-    }
-
     
     useEffect(() => {
         // fetches all the user's posts
@@ -61,7 +38,6 @@ function Profile() {
         })
         .then(res => res.json())
         .then((data) => {
-            console.log(data)
             if (data.userPfp.default_pfp === true) {
                 setUserpfp('http://127.0.0.1:8000/media/images/profile_pictures/Default_pfp.png')
             }
@@ -141,6 +117,7 @@ function Profile() {
         })
     }
 
+    // so we can use user and extra user without getting from local storage every time
     let user = ''
     if (localStorage.getItem('userData')) {
         user = JSON.parse(localStorage.getItem('userData')).user
@@ -187,13 +164,17 @@ function Profile() {
                 </>
                 }
                 <div>
-                    <p style={{fontSize: '25px'}}>{user.username}</p>
+                    <div style={{display: 'flex'}}>
+                        <p style={{fontSize: '25px'}}>{user.username}</p>
+                        <button className="editProfileButton" onClick={() => window.location.pathname = '/settings'}>Edit Profile</button>
+                    </div>
                     <div className="profileOverviewNums">
                         <p className="profileOverviewNum"><strong>{userPosts.length}</strong> Posts</p>
                         <p className="profileOverviewNum"><strong>{extraUser.followers.length}</strong> Followers</p>
                         <p className="profileOverviewNum"><strong>{extraUser.followers.length}</strong> Following</p>
                     </div>
-                    <p>{extraUser.bio ? extraUser.bio : ''}</p>
+                    <p className="profileName">{user.first_name ? user.first_name : ''}</p>
+                    <p className="profileBio">{extraUser.bio ? extraUser.bio : ''}</p>
                 </div>
             </div>
             }

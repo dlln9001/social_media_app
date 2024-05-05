@@ -42,13 +42,13 @@ function UserSignup() {
             <div className='loginBlock'>
                 <form action="" onSubmit={sendSignupData} className='loginForm'>
                     <div>
-                        <input type="text" id='loginUsernameId' className='userField' placeholder='Username'
+                        <input type="text" id='loginUsernameId' className='userField' placeholder='Username' maxLength="30" 
                             value={usernameForm}
                             onChange={(e) => setUsernameForm(e.target.value)}
                         />
                     </div>
                     <div>
-                        <input type="password" id='loginPasswordId' className='userField' placeholder='Password'
+                        <input type="password" id='loginPasswordId' className='userField' placeholder='Password' maxLength="30" 
                             value={passwordForm}
                             onChange={(e) => setPasswordForm(e.target.value)}
                         />
