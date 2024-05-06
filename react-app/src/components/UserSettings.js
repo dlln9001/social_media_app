@@ -82,10 +82,16 @@ function UserSettings() {
                 <h4>Bio</h4>
                 <p className="bioTextLimit">{bioText.length}/150</p>
                 <textarea maxLength="150" className="bioSettingsTextArea" value={bioText} onChange={(e) => setBioText(e.target.value)}></textarea>
-                <h4>Name</h4>
-                <input type="text" className="nameSettingsText" maxLength="30" value={nameText} onChange={(e) => setNameText(e.target.value)}/>
-                <h4>Username</h4>
-                <input type="text" className="nameSettingsText" maxLength="30" value={usernameText} onChange={(e) => setUsernameText(e.target.value)}/>
+                <div style={{display: 'flex'}}>
+                    <div>
+                        <h4>Name</h4>
+                        <input type="text" className="nameSettingsText" maxLength="30" value={nameText} onChange={(e) => setNameText(e.target.value)}/>
+                    </div>
+                    <div>
+                        <h4>Username</h4>
+                        <input type="text" className="nameSettingsText" maxLength="30" value={usernameText} onChange={(e) => setUsernameText(e.target.value)}/>
+                    </div>
+                </div>
                 {usernameTaken &&
                 <p>Username Already Taken</p>
                 }

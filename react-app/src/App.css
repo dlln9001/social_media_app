@@ -125,6 +125,7 @@ body {
     background-color: white;
     display: flex;
     position: fixed;
+    z-index: 2;
 }
 
 .searchPart {
@@ -360,7 +361,7 @@ body {
 .postsFlexBox{
     display: flex;
     flex-wrap: wrap;
-    margin-left: 2px;
+    margin-left: 5px;
 }
 
 .imgPreview {
@@ -368,7 +369,7 @@ body {
     width: 298px;
     aspect-ratio: 1/1;
     object-fit: cover;
-    margin: 3px;
+    margin: 2px;
 }
 
 .imgPreview:hover {
@@ -382,7 +383,7 @@ body {
     width: 800px;
     height: 800px;
     display: block;
-
+    background-color: white;
 }
 
 .selectedImageOriginal {
@@ -414,6 +415,202 @@ body {
     border-bottom-right-radius: 10px;
 }
 
+.selectedImgSideTop {
+    display: flex;
+    height: 60px;
+    border-bottom: 1px solid #F3F3F3;
+}
+
+.selectedImgUserDetails {
+    display: flex;
+    margin: 15px;
+    align-items: center;
+}
+
+.selectedImgPfp {
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+    border-radius: 100%;
+    margin-right: 16px;
+}
+
+.selectedImgUsername {
+    font-size: 15px;
+}
+
+.commentSection {
+    width: 100%;
+    height: 76%;
+    border-bottom: 1px solid #F3F3F3;
+    overflow: scroll;
+}
+
+.commentSection::-webkit-scrollbar {
+    display: none;
+}
+
+.postInteractionSection {
+    position: absolute;
+    width: 100%;
+    height: 16%;
+    bottom: 0%;
+    border-bottom-right-radius: 10px;
+}
+
+.postCommentProfile {
+    margin: 8px;
+    font-size: 26px;
+    margin-bottom: 13px;
+    cursor: pointer;
+}
+
+
+.postLikeProfile {
+    margin: 8px;
+    font-size: 34px;
+    cursor: pointer;
+}
+
+.addCommentInput {
+    position: absolute;
+    bottom: 0%;
+    outline: none;
+    border: 0px;
+    padding: 15px;
+    padding-right: 70px;
+    width: 345px;
+    border-top: 1px solid #D3D3D3;
+    border-bottom-right-radius: 10px;
+    overflow: scroll;
+}
+
+.submitComment {
+    position: absolute;
+    bottom: 10%;
+    right: 3%;
+    border: none;
+    background-color: inherit;
+    font-weight: bold;
+    color: #00BFFF;
+    cursor: pointer;
+}
+
+.submitComment:hover {
+    color: #1E90FF;
+}
+
+#submitCommentNotFilled {
+    position: absolute;
+    bottom: 10%;
+    right: 3%;
+    border: none;
+    background-color: inherit;
+    font-weight: bold;
+}
+
+.noCommentsYet {
+    position: absolute;
+    top: 40%;
+    left: 28%;
+}
+
+.commentContainer {
+    padding: 15px;
+    height: fit-content;
+}
+
+.commentPfp {
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
+    object-fit: cover;
+    margin-right: 18px;
+}
+
+.commentUsername {
+    font-weight: bold;
+    font-size: 14px;
+    margin-left: 15px;
+    position: relative;
+    top: 0%;
+    margin: 0px;
+    margin-right: 8px;
+    margin-top: 3px;
+}
+
+.commentUserText {
+    margin: 0px;
+    margin-top: 3px;
+    font-size: 14px;
+    word-break: break-all;
+}
+
+.commentsTimeAgo {
+    margin: 0px;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #778899;
+    position: relative;
+    left: 13.5%;
+}
+
+.commentsOptions {
+    font-size: 13px;
+    margin-top: 6px;
+    color: #778899;
+    margin-left: auto;
+    padding-right: 10px;
+    cursor: pointer;
+}
+
+.postDate {
+    margin: 0px;
+    margin-top: 10px;
+    margin-left: 12px;
+    font-size: 12px;
+    color: #778899;
+}
+
+.commentOptionsContainer {
+    background-color: white;
+    z-index: 4;
+    position: fixed;
+    top: 40%;
+    left: 40%;
+    width: 20%;
+    text-align: center;
+    border-radius: 10px;
+}
+
+#commentOptionDelete {
+    padding: 16px;
+    cursor: pointer;
+    margin: 0px;
+    color: red;
+    font-weight: bold;
+    border-bottom: 1px solid #D3D3D3;
+}
+
+#commentOptionCancel {
+    padding: 16px;
+    cursor: pointer;
+    margin: 0px;
+}
+
+.changeBackCommentOptions {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: black;
+    opacity: 0.6;
+    z-index: 3;
+}
+
+.flex {
+    display: flex;
+}
+
 .imageOptionsIcon {
     position: absolute;
     right: 0%;
@@ -431,6 +628,7 @@ body {
     text-align: center;
     border: 1px solid #D3D3D3;
     cursor: pointer;
+    background-color: white;
 }
 
 .deleteImage {
@@ -601,6 +799,7 @@ body {
     border: 1px solid #D3D3D3;
     outline: none;
     width: 300px;
+    margin-right: 55px;
 }
 
 .nameSettingsText:focus {
@@ -617,6 +816,8 @@ body {
     width: 320px;
     font-weight: bold;
     cursor: pointer;
+    position: absolute;
+    right: 32.5%;
 }
 
 .submitSettings:hover {

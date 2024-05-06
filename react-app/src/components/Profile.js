@@ -3,11 +3,12 @@ import '../App.css'
 import { useEffect, useState } from "react"
 import { IoMdGrid } from "react-icons/io";
 import { CiCamera } from "react-icons/ci";
-import { SlOptions } from "react-icons/sl";
 import ChangePfp from "./ChangePfp";
+import ExpandedPost from "./ExpandedPost";
 
 
 function Profile() {
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('userData')).user)
     const [userToken, setUserToken] = useState(JSON.parse(localStorage.getItem('userData')).token)
     const [userPosts, setUserPosts] = useState(false)
     const [userPfp, setUserpfp] = useState('')
@@ -17,7 +18,7 @@ function Profile() {
     // when a user clicks to expand a image, store some data as these variables
     const [selectedImgUrl, setSelectedImgUrl] = useState('')
     const [selectedImgRatio, setSelectedImgRatio] = useState('')
-
+    const [selectedImgDate, setSelectedImgDate] = useState('')
     
     useEffect(() => {
         // fetches all the user's posts
@@ -48,26 +49,6 @@ function Profile() {
         })
     }, [])
 
-    // sends a request to delete the post
-    function deletePost() {
-        // slice off the "http://127.0.0.1:8000/media/"
-        const sliced_url = selectedImgUrl.slice(28)
-        fetch('http://127.0.0.1:8000/post/delete/', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Token ${userToken}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                post_url: sliced_url
-            })
-        })
-        .then(res => res.json())
-        .then((data) => {
-            window.location.reload()
-        })
-    }
-
     // when a user clicks on the image preview, they'll get the full image
     function showFullImg(e) {
         setSelectedImgUrl(e.target.src)
@@ -78,26 +59,13 @@ function Profile() {
         else{
             setSelectedImgRatio('selectedImageOriginal')
         }
+        // get date from the id
+        const date_created = new Date(userPosts[parseInt(e.target.id)].date_created)
+        setSelectedImgDate(date_created)
         setShowFullImageVar(true)
     }
 
-    function showImageOptions() {
-        setShowImageOptionsVar(true)
-    }
-
-    // when something is clicked, close out the enlarged image 
-    function closeImage() {
-        setShowFullImageVar(false)
-        setShowImageOptionsVar(false)
-        setSelectedImgRatio('')
-        setSelectedImgUrl('')
-    }
-
-    // so we can use user and extra user without getting from local storage every time
-    let user = ''
-    if (localStorage.getItem('userData')) {
-        user = JSON.parse(localStorage.getItem('userData')).user
-    }
+    // get extraUserData
     let extraUser = false
     if (localStorage.getItem('extraUserData')) {
         extraUser = JSON.parse(localStorage.getItem('extraUserData')).extraUserData
@@ -114,7 +82,8 @@ function Profile() {
                 key={i} 
                 className="imgPreview" 
                 onClick={showFullImg} 
-                name={userPosts[i].aspect_ratio}/>
+                name={userPosts[i].aspect_ratio} 
+                id={i.toString()}/>
             )
         }
     }
@@ -161,19 +130,14 @@ function Profile() {
             }
             {showFullImgVar &&
             <>
-                <div className="changeBack" onClick={closeImage}></div>
-                <div className="selectedImageContainer">
-                    <img src={selectedImgUrl} className={selectedImgRatio} onClick={() => setShowImageOptionsVar(false)}/>
-                    <div className="selectedImgSide">
-                        <SlOptions className="imageOptionsIcon" onClick={showImageOptions}/>
-                        { showImageOptionsVar &&
-                            <div className="imageOptions">
-                                <p className="deleteImage" onClick={deletePost}>Delete</p>
-                                <p className="cancelImageOptions" onClick={() => setShowImageOptionsVar(false)} >Cancel</p>
-                            </div>
-                        }
-                    </div>
-                </div>
+                <ExpandedPost 
+                showFullImgVar={showFullImgVar} setShowFullImageVar={setShowFullImageVar} 
+                showImageOptionsVar={showImageOptionsVar} setShowImageOptionsVar={setShowImageOptionsVar} 
+                userPfp={userPfp} setUserPfp={setUserpfp} 
+                selectedImgUrl={selectedImgUrl} setSelectedImgUrl={setSelectedImgUrl} 
+                selectedImgRatio={selectedImgRatio} setSelectedImgRatio={setSelectedImgRatio} 
+                selectedImgDate={selectedImgDate} setSelectedImgDate={setSelectedImgDate}
+                />
             </>
             }
         </div>

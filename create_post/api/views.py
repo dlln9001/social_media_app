@@ -3,7 +3,13 @@ from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import FormParser, MultiPartParser
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import User
+from .serializers import CommentSerializer
+from user_authentication.api.serializers import UserSerializer
+from profile_app.api.serializers import UserPfpSerializer
+from profile_app.models import UserPfp
 from ..models import ImagePost
+from ..models import Comment
+from ..models import Like
 
 # Note: though the app is called 'create_post', it does more than just create, it handles interactions with posts as a whole
 
@@ -22,3 +28,38 @@ def delete_post(request):
     selected_post = ImagePost.objects.get(FK_Image_User=request.user, image=request.data['post_url'])
     selected_post.delete()
     return Response({'response': 'ImageDeleted'})
+
+
+@api_view(["GET", "POST"])
+def create_comment(request):
+    post_commented = ImagePost.objects.get(image=request.data['post_commented'])
+    text = request.data['comment_text']
+    new_comment = Comment(FK_Comment_User=request.user, FK_Comment_ImagePost=post_commented, text=text)
+    new_comment.save()
+    return Response({'Commentcreated': 'true'})
+
+
+@api_view(["GET", "POST"])
+def get_comment(request):
+    selected_post = ImagePost.objects.get(image=request.data['selected_post'])
+    comments = Comment.objects.filter(FK_Comment_ImagePost=selected_post)
+    serialized_comments = CommentSerializer(comments, many=True)
+    # want to send the commenters information to the front
+    users = []
+    userPfps = []
+    if comments:
+        for x in comments:
+            user = x.FK_Comment_User
+            userPfp = UserPfp.objects.get(FK_User_UserPfp=user)
+            user_serialized = UserSerializer(user)
+            userPfp_serialized = UserPfpSerializer(userPfp)
+            users.append(user_serialized.data)
+            userPfps.append(userPfp_serialized.data)
+    return Response({'comments': serialized_comments.data, 'users': users, 'userPfps': userPfps})
+
+
+@api_view(["GET", "POST"])
+def delete_comment(request):
+    comment = Comment.objects.get(FK_Comment_User=request.user, id=request.data['comment_id'])
+    comment.delete()
+    return Response({'CommentDeleted': 'true'})
