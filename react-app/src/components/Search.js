@@ -28,7 +28,7 @@ function Search () {
             } 
         })
     }, [searchInput])
-    console.log(searchedUsers.Users)
+
     return (
         <div className='search'>
             <SmallSideBar />

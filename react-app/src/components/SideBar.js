@@ -19,6 +19,7 @@ function SideBar() {
     function openSearch() {
         setShowSearch(true)
     }
+
     function showCreatePost() {
         setCreatePost(true)
     }
@@ -39,6 +40,8 @@ function SideBar() {
                 setUserPfp(absolute_url)
             }
         })
+
+
     }, [])
 
     return (

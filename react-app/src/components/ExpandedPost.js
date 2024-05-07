@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { SlOptions } from "react-icons/sl";
-import { CiHeart } from "react-icons/ci";
+import { IoMdHeartEmpty } from "react-icons/io";
+import { IoMdHeart } from "react-icons/io";
 import { IoChatbubbleOutline } from "react-icons/io5";
 
 
@@ -11,12 +12,15 @@ function ExpandedPost(props) {
     const [comments, setComments] = useState([])
     const [showCommentOptions, setShowCommentOptions] = useState(false)
     const [selectedCommentId, setSelectedCommentId] = useState('')
-    // slice off the "http://127.0.0.1:8000/media/"
+    // slice off the "http://127.0.0.1:8000/media/", so backend can use
     const [sliced_url, setSliced_url] = useState(props.selectedImgUrl.slice(28))
+    const [postLiked, setPostLiked] = useState(false)
+    const [numOfLikes, setNumOfLikes] = useState(0)
     const commentRef = useRef(null)
 
     useEffect(() => {
         getComments()
+        getLike()
     }, [])
 
     function getComments() {
@@ -166,6 +170,54 @@ function ExpandedPost(props) {
             getComments()
         })
     }
+
+    function submitLike(){
+        fetch('http://127.0.0.1:8000/post/submitlike/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Token ${userToken}`,
+                'Content-Type': 'application/json',
+            }, 
+            body: JSON.stringify({
+                post_selected: sliced_url,
+            })
+        })
+        .then(res => res.json())
+        .then(data => getLike())
+    }
+
+    function getLike() {
+        fetch('http://127.0.0.1:8000/post/getlike/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Token ${userToken}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                post_selected: sliced_url,
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            // data = {
+            //     liked: true,
+            //     num_of_likes: ...,
+            // }
+            // or 
+            // data = {
+            //     liked: false
+            // }
+            let dataLiked = JSON.parse(data.liked)
+            setPostLiked(dataLiked)
+            if (dataLiked) {
+                setNumOfLikes(data.num_of_likes)
+            }
+            else{
+                setNumOfLikes(0)
+            }
+
+        })
+    }
     
     return (
         <>
@@ -179,12 +231,6 @@ function ExpandedPost(props) {
                     </div>
                     <SlOptions className="imageOptionsIcon" onClick={showImageOptions}/>
                 </div>
-                { props.showImageOptionsVar &&
-                    <div className="imageOptions">
-                        <p className="deleteImage" onClick={deletePost}>Delete</p>
-                        <p className="cancelImageOptions" onClick={() => props.setShowImageOptionsVar(false)} >Cancel</p>
-                    </div>
-                }
                 <div className='commentSection'>
                     {comments.length === 0 
                     ?   
@@ -195,10 +241,23 @@ function ExpandedPost(props) {
                 </div>
                 <div className='postInteractionSection'>
                     <div>
-                        <CiHeart className='postLikeProfile'/>
+                        {postLiked 
+                        ?
+                        <IoMdHeart className='postLikeProfile' onClick={submitLike} style={{color: 'red'}}/> 
+                        : 
+                        <IoMdHeartEmpty className='postLikeProfile' onClick={submitLike}/>
+                        }
                         <IoChatbubbleOutline className='postCommentProfile' onClick={() => commentRef.current.focus()}/>
                     </div>
-                    <p className='postDate'>{props.selectedImgDate.getMonth() + 1}/{props.selectedImgDate.getDate()}/{props.selectedImgDate.getFullYear()}</p>
+                    <div style={{marginLeft: '12px'}}>
+                        {numOfLikes === '1' 
+                        ?
+                        <p className='likeCount'>{numOfLikes} like</p>
+                        :
+                        <p className='likeCount'>{numOfLikes} likes</p>
+                        }
+                        <p className='postDate'>{props.selectedImgDate.getMonth() + 1}/{props.selectedImgDate.getDate()}/{props.selectedImgDate.getFullYear()}</p>
+                    </div>
                     <form action="" onSubmit={submitComment}>
                         <input type="text" className='addCommentInput' placeholder='Add a comment...' minLength='1' maxLength='2000'
                         value={commentText}
@@ -210,6 +269,13 @@ function ExpandedPost(props) {
                 </div>
             </div>
         </div>
+        {/* The Post Options Section */}
+        { props.showImageOptionsVar &&
+                    <div className="imageOptions">
+                        <p className="deleteImage" onClick={deletePost}>Delete</p>
+                        <p className="cancelImageOptions" onClick={() => props.setShowImageOptionsVar(false)} >Cancel</p>
+                    </div>
+        }
         {/* The Comment Options Section */}
         {showCommentOptions &&
             <>  
@@ -219,9 +285,12 @@ function ExpandedPost(props) {
                 </div>
             </>
         }
-        {showCommentOptions 
+        {showCommentOptions || props.showImageOptionsVar
         ?
-        <div className='changeBackCommentOptions' onClick={() => setShowCommentOptions(false)}></div> 
+        <div className='changeBackCommentOptions' onClick={() => {
+            setShowCommentOptions(false)
+            props.setShowImageOptionsVar(false)
+        }}></div> 
         : 
         <div className="changeBack" onClick={closeImage}></div>
         }

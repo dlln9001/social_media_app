@@ -17,6 +17,6 @@ class Comment(models.Model):
 class Like(models.Model):
     FK_Like_User = models.ForeignKey(User, on_delete=models.CASCADE)
     # you can like a post or a comment
-    FK_Like_Post = models.ForeignKey(ImagePost, on_delete=models.CASCADE, blank=True)
-    FK_Like_Comment = models.ForeignKey(Comment, on_delete=models.CASCADE, blank=True)
+    FK_Like_Post = models.ForeignKey(ImagePost, on_delete=models.CASCADE, blank=True, null=True)
+    FK_Like_Comment = models.ForeignKey(Comment, on_delete=models.CASCADE, blank=True, null=True)
     date_created = models.DateTimeField(auto_now_add=True)

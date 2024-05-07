@@ -63,3 +63,28 @@ def delete_comment(request):
     comment = Comment.objects.get(FK_Comment_User=request.user, id=request.data['comment_id'])
     comment.delete()
     return Response({'CommentDeleted': 'true'})
+
+
+# likes for posts
+@api_view(["GET", "POST"])
+def submit_like(request):
+    post_selected = ImagePost.objects.get(image=request.data['post_selected'])
+    # check if a like already exists, if it does, unlike it, if it doesn't, like it
+    check_like = Like.objects.filter(FK_Like_Post=post_selected, FK_Like_User=request.user)
+    if check_like:
+        check_like.delete()
+    else:
+        like = Like(FK_Like_User=request.user, FK_Like_Post=post_selected)
+        like.save()
+    return Response({'like_submit': 'true'})
+
+
+@api_view(["GET", "POST"])
+def get_like(request):
+    post_selected = ImagePost.objects.get(image=request.data['post_selected'])
+    like = Like.objects.filter(FK_Like_Post=post_selected, FK_Like_User=request.user)
+    if like:
+        num_of_likes = str(len(like))
+        return Response({'liked': 'true', 'num_of_likes': num_of_likes})
+    else:
+        return Response({'liked': 'false'})

@@ -441,9 +441,9 @@ body {
 
 .commentSection {
     width: 100%;
-    height: 76%;
-    border-bottom: 1px solid #F3F3F3;
+    height: 74%;
     overflow: scroll;
+    border-bottom: 1px solid #F3F3F3;
 }
 
 .commentSection::-webkit-scrollbar {
@@ -453,7 +453,7 @@ body {
 .postInteractionSection {
     position: absolute;
     width: 100%;
-    height: 16%;
+    height: 18%;
     bottom: 0%;
     border-bottom-right-radius: 10px;
 }
@@ -461,15 +461,28 @@ body {
 .postCommentProfile {
     margin: 8px;
     font-size: 26px;
-    margin-bottom: 13px;
+    margin-bottom: 0px;
     cursor: pointer;
+    padding-bottom: 4px;
 }
 
 
 .postLikeProfile {
     margin: 8px;
-    font-size: 34px;
+    margin-bottom: 0px;
+    font-size: 30px;
     cursor: pointer;
+    position: relative;
+    top: 0%;
+}
+
+.likeCount {
+    position: relative;
+    top: 0%;
+    margin: 0px;
+    font-weight: bold;
+    font-size: 15px;
+    margin-top: 10px;
 }
 
 .addCommentInput {
@@ -566,8 +579,7 @@ body {
 
 .postDate {
     margin: 0px;
-    margin-top: 10px;
-    margin-left: 12px;
+    margin-top: 6px;
     font-size: 12px;
     color: #778899;
 }
@@ -590,12 +602,24 @@ body {
     color: red;
     font-weight: bold;
     border-bottom: 1px solid #D3D3D3;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+#commentOptionDelete:hover {
+    background-color: #F3F3F3;
 }
 
 #commentOptionCancel {
     padding: 16px;
     cursor: pointer;
     margin: 0px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+#commentOptionCancel:hover {
+    background-color: #F3F3F3;
 }
 
 .changeBackCommentOptions {
@@ -620,21 +644,22 @@ body {
 }
 
 .imageOptions {
-    position: absolute;
-    top: 3%;
-    right: 10%;
-    width: 260px;
+    position: fixed;
+    top: 40%;
+    right: 40%;
+    width: 20%;
     border-radius: 10px;
     text-align: center;
     border: 1px solid #D3D3D3;
     cursor: pointer;
     background-color: white;
+    z-index: 4;
 }
 
 .deleteImage {
     color: red;
     font-weight: bold;
-    padding: 10px;
+    padding: 15px;
     margin: 0px;
     border-bottom: 1px solid #D3D3D3;
     border-top-left-radius: 10px;
@@ -647,7 +672,9 @@ body {
 
 .cancelImageOptions {
     margin: 0px;
-    padding: 10px;
+    padding: 15px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 .cancelImageOptions:hover {
