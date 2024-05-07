@@ -17,6 +17,7 @@ function ExpandedPost(props) {
     const [postLiked, setPostLiked] = useState(false)
     const [numOfLikes, setNumOfLikes] = useState(0)
     const commentRef = useRef(null)
+    let isStrangerUser = (props.user.username != user.username)
 
     useEffect(() => {
         getComments()
@@ -205,11 +206,12 @@ function ExpandedPost(props) {
             // }
             // or 
             // data = {
-            //     liked: false
+            //     liked: false,
+            //     num_of_likes: ...,
             // }
             let dataLiked = JSON.parse(data.liked)
             setPostLiked(dataLiked)
-            if (dataLiked) {
+            if (data.num_of_likes) {
                 setNumOfLikes(data.num_of_likes)
             }
             else{
@@ -227,9 +229,11 @@ function ExpandedPost(props) {
                 <div className="selectedImgSideTop">
                     <div className="selectedImgUserDetails">
                         <img src={props.userPfp} className="selectedImgPfp"/>
-                        <p className="selectedImgUsername">{user.username}</p>
+                        <p className="selectedImgUsername">{props.user.username}</p>
                     </div>
+                    {!isStrangerUser &&
                     <SlOptions className="imageOptionsIcon" onClick={showImageOptions}/>
+                    }
                 </div>
                 <div className='commentSection'>
                     {comments.length === 0 

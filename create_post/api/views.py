@@ -83,8 +83,9 @@ def submit_like(request):
 def get_like(request):
     post_selected = ImagePost.objects.get(image=request.data['post_selected'])
     like = Like.objects.filter(FK_Like_Post=post_selected, FK_Like_User=request.user)
+    all_likes = Like.objects.filter(FK_Like_Post=post_selected)
+    num_of_likes = str(len(all_likes))
     if like:
-        num_of_likes = str(len(like))
         return Response({'liked': 'true', 'num_of_likes': num_of_likes})
     else:
-        return Response({'liked': 'false'})
+        return Response({'liked': 'false', 'num_of_likes': num_of_likes})

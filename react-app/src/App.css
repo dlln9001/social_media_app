@@ -145,12 +145,34 @@ body {
 }
 
 .searchedUser {
-    padding: 20px;
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
     cursor: pointer;
 }
 
 .searchedUser:hover{
     background-color: #F3F3F3;
+}
+
+.searchedUserPfp {
+    width: 45px;
+    height: 45px;
+    border-radius: 100%;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.searchedUserUsername {
+    margin: 0px;
+    font-weight: bold;
+    margin-bottom: 1px;
+    margin-top: 5px;
+}
+
+.searchedUserName {
+    margin: 0px;
+    color: #778899;
 }
 
 .createPostDiv {
@@ -764,6 +786,23 @@ body {
     padding-top: 50px;
     width: fit-content;
 
+}
+
+.followButton {
+    margin-left: 30px;
+    margin-top: 25px;
+    border: 0px;
+    height: 32px;
+    width: 80px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #00BFFF;
+    color: white;
+}
+
+.followButton:hover {
+    background-color: #1E90FF;
 }
 
 .settingsProfileContainer {

@@ -5,6 +5,7 @@ from ..models import UserProfile
 from django.contrib.auth.models import User
 from .serializers import UserProfileSerializer, UserPfpSerializer
 from create_post.api.serializers import ImagePostSerializer
+from user_authentication.api.serializers import UserSerializer
 from create_post.models import ImagePost
 from ..models import UserPfp
 
@@ -12,13 +13,22 @@ from ..models import UserPfp
 @api_view(["GET", "POST"])
 def profile(request):
     # userprofile is one to one relationship with user, adding extra info to user
-    serializedProfile = UserProfileSerializer(request.user.userprofile)
+    user = User.objects.get(username=request.data['user_name'])
+    serializedProfile = UserProfileSerializer(user.userprofile)
     return Response({'extraUserData': serializedProfile.data})
 
 
 @api_view(["GET", "POST"])
+def get_user(request):
+    user = User.objects.get(username=request.data['user_name'])
+    user_serialized = UserSerializer(user)
+    return Response({'user': user_serialized.data})
+
+
+@api_view(["GET", "POST"])
 def get_posts(request):
-    posts = ImagePost.objects.filter(FK_Image_User=request.user)
+    user = User.objects.get(username=request.data['user_name'])
+    posts = ImagePost.objects.filter(FK_Image_User=user)
     serialized_posts = ImagePostSerializer(posts, many=True)
     return Response({'postData': serialized_posts.data})
 
@@ -36,9 +46,16 @@ def upload_pfp(request):
 
 @api_view(["GET", "POST"])
 def get_pfp(request):
-    user_pfp = UserPfp.objects.get(FK_User_UserPfp=request.user)
-    user_pfp_serialized = UserPfpSerializer(user_pfp)
-    return Response({'userPfp': user_pfp_serialized.data})
+    # some requests in react have sent a user_name, while some just get it from request.user
+    if request.data.get('user_name'):
+        specific_user = User.objects.get(username=request.data['user_name'])
+        specific_user_pfp = UserPfp.objects.get(FK_User_UserPfp=specific_user)
+        specific_user_pfp_serialized = UserPfpSerializer(specific_user_pfp)
+        return Response({'userPfp': specific_user_pfp_serialized.data})
+    else:
+        user_pfp = UserPfp.objects.get(FK_User_UserPfp=request.user)
+        user_pfp_serialized = UserPfpSerializer(user_pfp)
+        return Response({'userPfp': user_pfp_serialized.data})
 
 
 @api_view(["GET", "POST"])

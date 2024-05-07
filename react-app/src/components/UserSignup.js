@@ -23,7 +23,23 @@ function UserSignup() {
             setUsernameForm('')
             setPasswordForm('')
             if (JSON.parse(localStorage.getItem('userData')).username != 'A user with that username already exists.'){
-                window.location.pathname = '/home'
+                // fetches extra data, like followers of the user, etc.
+                fetch('http://127.0.0.1:8000/profile/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Token ${JSON.parse(localStorage.getItem('userData')).token}`
+                    },
+                    body: JSON.stringify({
+                        user_name: JSON.parse(localStorage.getItem('userData')).user.username
+                    })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        localStorage.setItem('extraUserData', JSON.stringify(data))
+                        window.location.pathname = '/home'
+                    })
+                    .catch(error => error)
             }
     })}
 

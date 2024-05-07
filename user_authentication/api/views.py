@@ -18,7 +18,7 @@ def getData(request):
 @api_view(['POST'])
 def signup(request):
     serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
+    if serializer.is_valid(): 
         serializer.save()
         user = User.objects.get(username=request.data['username'])
         # store a hashed password

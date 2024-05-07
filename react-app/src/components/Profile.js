@@ -5,10 +5,12 @@ import { IoMdGrid } from "react-icons/io";
 import { CiCamera } from "react-icons/ci";
 import ChangePfp from "./ChangePfp";
 import ExpandedPost from "./ExpandedPost";
+import { useParams } from "react-router-dom";
 
 
 function Profile() {
     const [user, setUser] = useState(JSON.parse(localStorage.getItem('userData')).user)
+    const [extraUser, setExtraUser] = useState(JSON.parse(localStorage.getItem('extraUserData')).extraUserData)
     const [userToken, setUserToken] = useState(JSON.parse(localStorage.getItem('userData')).token)
     const [userPosts, setUserPosts] = useState(false)
     const [userPfp, setUserpfp] = useState('')
@@ -19,12 +21,26 @@ function Profile() {
     const [selectedImgUrl, setSelectedImgUrl] = useState('')
     const [selectedImgRatio, setSelectedImgRatio] = useState('')
     const [selectedImgDate, setSelectedImgDate] = useState('')
-    
+    // for stranger users (users other than the logged in one)
+    const {username} = useParams()
+    // so we know if it's a stranger's user profile, get a boolean value
+    let isStrangerUser = (username != JSON.parse(localStorage.getItem('userData')).user.username)
+
     useEffect(() => {
+        if (isStrangerUser) {
+            getExtraData(username)
+            getUser(username)
+        }
         // fetches all the user's posts
         fetch('http://127.0.0.1:8000/profile/posts/', {
             method: 'POST',
-            headers: {'Authorization': `Token ${userToken}`}
+            headers: {
+                'Authorization': `Token ${userToken}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user_name: username,
+            })
         })
         .then(res => res.json())
         .then(data => {
@@ -35,7 +51,13 @@ function Profile() {
         // fetches the user's profile picture
         fetch('http://127.0.0.1:8000/profile/getpfp/', {
             method: 'POST',
-            headers: {'Authorization': `Token ${userToken}`}
+            headers: {
+                'Authorization': `Token ${userToken}`,
+                'Content-Type': 'application/json',
+            }, 
+            body: JSON.stringify({
+                user_name: username
+            })
         })
         .then(res => res.json())
         .then((data) => {
@@ -47,7 +69,39 @@ function Profile() {
                 setUserpfp(absolute_url)
             }
         })
+        
     }, [])
+
+    function getExtraData(username) {
+        fetch('http://127.0.0.1:8000/profile/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user_name: username
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            setExtraUser(data.extraUserData)
+        })
+    }
+
+    function getUser(username) {
+        fetch('http://127.0.0.1:8000/profile/getuser/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Token ${userToken}`,
+                'Content-Type': 'application/json',
+            }, 
+            body: JSON.stringify({
+                user_name: username
+            })
+        })
+        .then(res => res.json())
+        .then(data => setUser(data.user))
+    }
 
     // when a user clicks on the image preview, they'll get the full image
     function showFullImg(e) {
@@ -63,12 +117,6 @@ function Profile() {
         const date_created = new Date(userPosts[parseInt(e.target.id)].date_created)
         setSelectedImgDate(date_created)
         setShowFullImageVar(true)
-    }
-
-    // get extraUserData
-    let extraUser = false
-    if (localStorage.getItem('extraUserData')) {
-        extraUser = JSON.parse(localStorage.getItem('extraUserData')).extraUserData
     }
 
     // gets all the posts, and makes html elements to render the images
@@ -91,11 +139,12 @@ function Profile() {
     return (
         <div className="homepage">
             <SideBar />
-            {showPfpOptionsVar && <div className="changeBack" onClick={() => setShowPfpOptionsVar(false)}></div>}
+            {(showPfpOptionsVar && !isStrangerUser) && <div className="changeBack" onClick={() => setShowPfpOptionsVar(false)}></div>}
+            {/* Wait for it to get data before trying loading */}
             {(extraUser && userPosts) && 
             <div className="profileOverview">
                 <img src={userPfp} alt="" className="userPfp" onClick={() => setShowPfpOptionsVar(true)}/>
-                {showPfpOptionsVar &&
+                {(showPfpOptionsVar && !isStrangerUser) &&
                 <>
                     <ChangePfp showPfpOptionsVar={showPfpOptionsVar} setShowPfpOptionsVar={setShowPfpOptionsVar}/>
                 </>
@@ -103,7 +152,12 @@ function Profile() {
                 <div>
                     <div style={{display: 'flex'}}>
                         <p style={{fontSize: '25px'}}>{user.username}</p>
+                        {!isStrangerUser 
+                        ?
                         <button className="editProfileButton" onClick={() => window.location.pathname = '/settings'}>Edit Profile</button>
+                        :
+                        <button className="followButton">Follow</button>
+                        }
                     </div>
                     <div className="profileOverviewNums">
                         <p className="profileOverviewNum"><strong>{userPosts.length}</strong> Posts</p>
@@ -137,6 +191,7 @@ function Profile() {
                 selectedImgUrl={selectedImgUrl} setSelectedImgUrl={setSelectedImgUrl} 
                 selectedImgRatio={selectedImgRatio} setSelectedImgRatio={setSelectedImgRatio} 
                 selectedImgDate={selectedImgDate} setSelectedImgDate={setSelectedImgDate}
+                user={user} setUser={setUser}
                 />
             </>
             }

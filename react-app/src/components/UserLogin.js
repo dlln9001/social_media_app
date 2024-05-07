@@ -29,7 +29,10 @@ function UserLogin() {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Token ${JSON.parse(localStorage.getItem('userData')).token}`
-                    }
+                    },
+                    body: JSON.stringify({
+                        user_name: JSON.parse(localStorage.getItem('userData')).user.username
+                    })
                 })
                     .then(res => res.json())
                     .then(data => {
