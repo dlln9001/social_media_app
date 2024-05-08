@@ -23,14 +23,18 @@ function Profile() {
     const [selectedImgDate, setSelectedImgDate] = useState('')
     // for stranger users (users other than the logged in one)
     const {username} = useParams()
+    const [isFollowed, setIsFollowed] = useState(false)
     // so we know if it's a stranger's user profile, get a boolean value
     let isStrangerUser = (username != JSON.parse(localStorage.getItem('userData')).user.username)
 
     useEffect(() => {
+        getExtraData(username)
         if (isStrangerUser) {
-            getExtraData(username)
             getUser(username)
         }
+
+        getIsFollowed()
+
         // fetches all the user's posts
         fetch('http://127.0.0.1:8000/profile/posts/', {
             method: 'POST',
@@ -119,6 +123,49 @@ function Profile() {
         setShowFullImageVar(true)
     }
 
+    function followUser() {
+        fetch('http://127.0.0.1:8000/profile/followuser/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Token ${userToken}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                following_user: JSON.parse(localStorage.getItem('userData')).user.username,
+                followed_user: username
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            getIsFollowed()
+            getExtraData(username)
+            
+        })
+    }
+
+    // check if the user is already followed to another user or not
+    function getIsFollowed(){
+        fetch('http://127.0.0.1:8000/profile/isfollowed/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Token ${userToken}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                following_user: JSON.parse(localStorage.getItem('userData')).user.username,
+                followed_user: username
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            // data = {
+            //     isFollowed: ...
+            // }
+            // either true or false
+            setIsFollowed(data.isFollowed)
+        })
+    }
+
     // gets all the posts, and makes html elements to render the images
     const userPostsHtml = []
     if(userPosts) {
@@ -156,13 +203,18 @@ function Profile() {
                         ?
                         <button className="editProfileButton" onClick={() => window.location.pathname = '/settings'}>Edit Profile</button>
                         :
-                        <button className="followButton">Follow</button>
+                         isFollowed ? <button className="followButton following" onClick={followUser}>Following</button> : <button className="followButton follow" onClick={followUser}>Follow</button>
                         }
                     </div>
                     <div className="profileOverviewNums">
                         <p className="profileOverviewNum"><strong>{userPosts.length}</strong> Posts</p>
-                        <p className="profileOverviewNum"><strong>{extraUser.followers.length}</strong> Followers</p>
-                        <p className="profileOverviewNum"><strong>{extraUser.followers.length}</strong> Following</p>
+                        {extraUser.followers.length === 1 
+                        ?
+                        <p className="profileOverviewNum"><strong>{extraUser.followers.length}</strong> follower</p>
+                        :
+                        <p className="profileOverviewNum"><strong>{extraUser.followers.length}</strong> followers</p>
+                        }
+                        <p className="profileOverviewNum"><strong>{extraUser.following.length}</strong> following</p>
                     </div>
                     <p className="profileName">{user.first_name ? user.first_name : ''}</p>
                     <p className="profileBio">{extraUser.bio ? extraUser.bio : ''}</p>

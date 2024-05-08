@@ -8,4 +8,6 @@ urlpatterns = [
     path('getpfp/', views.get_pfp),
     path('removepfp/', views.remove_pfp),
     path('getuser/', views.get_user),
+    path('followuser/', views.follow_user),
+    path('isfollowed/', views.get_is_followed),
 ]

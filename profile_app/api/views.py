@@ -14,8 +14,15 @@ from ..models import UserPfp
 def profile(request):
     # userprofile is one to one relationship with user, adding extra info to user
     user = User.objects.get(username=request.data['user_name'])
-    serializedProfile = UserProfileSerializer(user.userprofile)
-    return Response({'extraUserData': serializedProfile.data})
+    user_profile = user.userprofile
+    serializedProfile = UserProfileSerializer(user_profile)
+    followers = list(user_profile.followers.all())
+    serialized_followers = UserProfileSerializer(followers, many=True) # followers has a list of UserProfile objects, so need to serialized everything in that
+    followers = {'followers': serialized_followers.data}
+    all_data = {}
+    all_data.update(serializedProfile.data)
+    all_data.update(followers)
+    return Response({'extraUserData': all_data})
 
 
 @api_view(["GET", "POST"])
@@ -66,3 +73,28 @@ def remove_pfp(request):
     user_pfp.save()
     user_pfp_serialized = UserPfpSerializer(user_pfp)
     return Response({'userPfp': user_pfp_serialized.data})
+
+
+@api_view(['GET', 'POST'])
+def follow_user(request):
+    following_user = User.objects.get(username=request.data['following_user'])
+    followed_user = User.objects.get(username=request.data['followed_user'])
+    following_user_profile = UserProfile.objects.get(user=following_user)
+    followed_user_profile = UserProfile.objects.get(user=followed_user)
+    if following_user_profile in followed_user_profile.followers.all():
+        following_user_profile.following.remove(followed_user_profile)
+    else:
+        following_user_profile.following.add(followed_user_profile)
+    return Response({'followsubmited': 'true'})
+
+
+@api_view(['GET', 'POST'])
+def get_is_followed(request):
+    following_user = User.objects.get(username=request.data['following_user'])
+    followed_user = User.objects.get(username=request.data['followed_user'])
+    following_user_profile = UserProfile.objects.get(user=following_user)
+    followed_user_profile = UserProfile.objects.get(user=followed_user)
+    if following_user_profile in followed_user_profile.followers.all():
+        return Response({'isFollowed': True})
+    else:
+        return Response({'isFollowed': False})
