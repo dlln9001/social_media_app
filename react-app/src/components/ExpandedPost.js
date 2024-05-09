@@ -228,8 +228,8 @@ function ExpandedPost(props) {
             <div className="selectedImgSide">
                 <div className="selectedImgSideTop">
                     <div className="selectedImgUserDetails">
-                        <img src={props.userPfp} className="selectedImgPfp"/>
-                        <p className="selectedImgUsername">{props.user.username}</p>
+                        <img src={props.userPfp} className="selectedImgPfp" onClick={() => window.location.pathname = '/user/' + props.user.username}/>
+                        <p className="selectedImgUsername" onClick={() => window.location.pathname = '/user/' + props.user.username}>{props.user.username}</p>
                     </div>
                     {!isStrangerUser &&
                     <SlOptions className="imageOptionsIcon" onClick={showImageOptions}/>

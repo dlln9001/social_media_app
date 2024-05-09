@@ -163,6 +163,21 @@ function Profile() {
             // }
             // either true or false
             setIsFollowed(data.isFollowed)
+            // so it updates the logged in user data, to have an updated list of who their following
+            fetch('http://127.0.0.1:8000/profile/', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Token ${userToken}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_name: JSON.parse(localStorage.getItem('userData')).user.username
+                })
+            })
+            .then(res => res.json())
+            .then (data => {
+                localStorage.setItem('extraUserData', JSON.stringify(data))
+            })
         })
     }
 

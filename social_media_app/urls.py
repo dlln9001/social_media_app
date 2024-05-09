@@ -12,4 +12,5 @@ urlpatterns = [
     path('search/', include('search.api.urls')),
     path('post/', include('create_post.api.urls')),
     path('settings/', include('user_settings.api.urls')),
+    path('home/', include('home_page.api.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
