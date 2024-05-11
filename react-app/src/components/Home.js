@@ -17,6 +17,8 @@ function Home() {
     const [allPostsHtml, setAllPostsHtml] = useState('')
     const [showFullImgVar, setShowFullImageVar] = useState(false)
     const [showImageOptionsVar, setShowImageOptionsVar] = useState(false)
+    const [showLikes, setShowLikes] = useState(false)
+    const [showLikesHtml, setShowLikesHtml] = useState('')
     // when a user clicks to expand a image, store some data as these variables
     const [selectedImgUrl, setSelectedImgUrl] = useState('')
     const [selectedImgRatio, setSelectedImgRatio] = useState('')
@@ -70,7 +72,7 @@ function Home() {
         .then(data => homePostsHtml())
     }
 
-    async function getLike(sliced_url) {
+    async function getLike(sliced_url, isGetLikers=false) {
         const response = await fetch('http://127.0.0.1:8000/post/getlike/', {
             method: 'POST',
             headers: {
@@ -81,17 +83,53 @@ function Home() {
                 post_selected: sliced_url,
             })
         })
-            // data = {
-            //     liked: true,
-            //     num_of_likes: ...,
-            // }
-            // or 
-            // data = {
-            //     liked: false,
-            //     num_of_likes: ...,
-            // }
+        // data = {
+        //     liked: true,
+        //     num_of_likes: ...,
+        //     liker_data: [{username: ..., first_name: ..., user_pfp_url: ..., default_pfp: ..., ...}, {...}, {...}]
+        // }
+        // or 
+        // data = {
+        //     liked: false,
+        //     num_of_likes: ...,
+        //     liker_data: ...,
+        // }
         const data = await response.json()
-        return data
+        if (isGetLikers) {
+            return data.liker_data
+        }
+        else {
+            return data
+        }
+    }
+
+    async function showAllLikes(post_url) {
+        let likesHtml = []
+        let liker_data = await getLike(post_url, true)
+        for (let i=0; i < liker_data.length; i++) {
+            let absolute_url = 'http://127.0.0.1:8000' + liker_data[i].user_pfp_url
+            if (liker_data[i].default_pfp) {
+                absolute_url = 'http://127.0.0.1:8000/media/images/profile_pictures/Default_pfp.png'
+            }
+            likesHtml.push(
+                <div key={i} className="followLikesContainer">
+                    <img src={absolute_url} alt="" className="followLikesProfilePic" onClick={() => window.location.pathname = '/user/' + liker_data[i].username}/>
+                    <div className="followLikesNamesContainer">
+                        <p className="followLikesUsername" onClick={() => window.location.pathname = '/user/' + liker_data[i].username}>{liker_data[i].username}</p>
+                        <p className="followLikesFirstName">{liker_data[i].first_name}</p>
+                    </div>
+                </div>
+            )
+        }
+
+        if (liker_data.length === 0) {
+            likesHtml.push (
+                <p className='noFollowLikes'>No likes yet</p>
+            )
+        }
+
+        setShowLikesHtml(likesHtml)
+        setShowLikes(true)
     }
 
     async function getPfp(username) {
@@ -178,7 +216,11 @@ function Home() {
                         <IoChatbubbleOutline className="commentIconHome"
                         onClick={() => showFullImg(date_created_converted, absolute_pfp_url, absolute_url, aspect_ratio, allPosts[i].username)}/>
                     </div> 
-                    {likes_data.num_of_likes === '1' ? <p className="homePostsLike">{likes_data.num_of_likes} like</p> : <p className="homePostsLike"> {likes_data.num_of_likes} likes</p>}
+                    {likes_data.num_of_likes === '1' 
+                    ?
+                     <p className="homePostsLike" onClick={() => showAllLikes(sliced_url)}>{likes_data.num_of_likes} like</p> 
+                     :
+                     <p className="homePostsLike" onClick={() => showAllLikes(sliced_url)}> {likes_data.num_of_likes} likes</p>}
                     {comment_count === 0 
                     ?
                      '' 
@@ -229,7 +271,19 @@ function Home() {
                 user={user} setUser={setUser}
                 />
             </>
-        }
+            }
+            {/* show all likers of a post */}
+            {showLikes &&
+                <> 
+                <div className="changeBack" onClick={() => setShowLikes(false)}></div>
+                <div className='allLikesContainer'>
+                    <p className="followLikesTxt">Likes</p>
+                    <div className='followLikeUsers'>
+                        {showLikesHtml}
+                    </div>
+                </div>
+                </> 
+            }
         </div>
         </>
     )

@@ -17,6 +17,10 @@ function Profile() {
     const [showFullImgVar, setShowFullImageVar] = useState(false)
     const [showImageOptionsVar, setShowImageOptionsVar] = useState(false)
     const [showPfpOptionsVar, setShowPfpOptionsVar] = useState(false)
+    const [showFollowersVar, setShowFollowersVar] = useState(false)
+    const [followersHtmlVar, setFollowersHtmlVar] = useState('')
+    const [showFollowingVar, setShowFollowingVar] = useState('')
+    const [followingHtmlVar, setFollowingHtmlVar] = useState('')
     // when a user clicks to expand a image, store some data as these variables
     const [selectedImgUrl, setSelectedImgUrl] = useState('')
     const [selectedImgRatio, setSelectedImgRatio] = useState('')
@@ -26,7 +30,7 @@ function Profile() {
     const [isFollowed, setIsFollowed] = useState(false)
     // so we know if it's a stranger's user profile, get a boolean value
     let isStrangerUser = (username != JSON.parse(localStorage.getItem('userData')).user.username)
-
+    
     useEffect(() => {
         getExtraData(username)
         if (isStrangerUser) {
@@ -52,8 +56,51 @@ function Profile() {
             setUserPosts(data.postData.reverse())
         })
 
+    getPfp(username)
+        
+    }, [])
+
+    // gets HTML for followers preview
+    async function showFollowers() {
+        let followersHtml = []
+        for (let i=0; i < extraUser.followers.length; i++) {
+            let pfp = await getPfp(extraUser.followers[i].username, true)
+            followersHtml.push(
+                <div key={i} className="followLikesContainer">
+                    <img src={pfp} alt="" className="followLikesProfilePic" onClick={() => window.location.pathname = '/user/' + extraUser.followers[i].username}/>
+                    <div className="followLikesNamesContainer">
+                        <p className="followLikesUsername" onClick={() => window.location.pathname = '/user/' + extraUser.followers[i].username}>{extraUser.followers[i].username}</p>
+                        <p className="followLikesFirstName">{extraUser.followers[i].first_name}</p>
+                    </div>
+                </div>
+            )
+        }
+        setFollowersHtmlVar(followersHtml)
+        setShowFollowersVar(true)
+    }
+
+        // gets HTML for following preview
+        async function showFollowing() {
+            let followingHtml = []
+            for (let i=0; i < extraUser.following.length; i++) {
+                let pfp = await getPfp(extraUser.following[i].username, true)
+                followingHtml.push(
+                    <div key={i} className="followLikesContainer">
+                        <img src={pfp} alt="" className="followLikesProfilePic" onClick={() => window.location.pathname = '/user/' + extraUser.following[i].username}/>
+                        <div className="followLikesNamesContainer">
+                            <p className="followLikesUsername" onClick={() => window.location.pathname = '/user/' + extraUser.following[i].username}>{extraUser.following[i].username}</p>
+                            <p className="followLikesFirstName">{extraUser.following[i].first_name}</p>
+                        </div>
+                    </div>
+                )
+            }
+            setFollowingHtmlVar(followingHtml)
+            setShowFollowingVar(true)
+        }
+
+    async function getPfp(username, isFollow=false) {
         // fetches the user's profile picture
-        fetch('http://127.0.0.1:8000/profile/getpfp/', {
+        const response = await fetch('http://127.0.0.1:8000/profile/getpfp/', {
             method: 'POST',
             headers: {
                 'Authorization': `Token ${userToken}`,
@@ -63,18 +110,30 @@ function Profile() {
                 user_name: username
             })
         })
-        .then(res => res.json())
-        .then((data) => {
-            if (data.userPfp.default_pfp === true) {
-                setUserpfp('http://127.0.0.1:8000/media/images/profile_pictures/Default_pfp.png')
+        // data = {
+        //     userPfp: {user_pfp_url: ..., default_pfp: ...,}
+        // }
+        const data = await response.json()
+        if (data.userPfp.default_pfp === true) {
+            if (isFollow) {
+                return 'http://127.0.0.1:8000/media/images/profile_pictures/Default_pfp.png'
             }
             else {
-                const absolute_url = 'http://127.0.0.1:8000' + data.userPfp.user_pfp_url
+                setUserpfp('http://127.0.0.1:8000/media/images/profile_pictures/Default_pfp.png')
+            }
+        }
+        else {
+            const absolute_url = 'http://127.0.0.1:8000' + data.userPfp.user_pfp_url
+            if (isFollow) {
+                return absolute_url
+                
+                
+            }
+            else {
                 setUserpfp(absolute_url)
             }
-        })
-        
-    }, [])
+        }
+    }
 
     function getExtraData(username) {
         fetch('http://127.0.0.1:8000/profile/', {
@@ -225,11 +284,11 @@ function Profile() {
                         <p className="profileOverviewNum"><strong>{userPosts.length}</strong> Posts</p>
                         {extraUser.followers.length === 1 
                         ?
-                        <p className="profileOverviewNum"><strong>{extraUser.followers.length}</strong> follower</p>
+                        <p className="profileOverviewNum" style={{cursor: 'pointer'}} onClick={showFollowers}><strong>{extraUser.followers.length}</strong> follower</p>
                         :
-                        <p className="profileOverviewNum"><strong>{extraUser.followers.length}</strong> followers</p>
+                        <p className="profileOverviewNum" style={{cursor: 'pointer'}} onClick={showFollowers}><strong>{extraUser.followers.length}</strong> followers</p>
                         }
-                        <p className="profileOverviewNum"><strong>{extraUser.following.length}</strong> following</p>
+                        <p className="profileOverviewNum" style={{cursor: 'pointer'}} onClick={showFollowing}><strong>{extraUser.following.length}</strong> following</p>
                     </div>
                     <p className="profileName">{user.first_name ? user.first_name : ''}</p>
                     <p className="profileBio">{extraUser.bio ? extraUser.bio : ''}</p>
@@ -261,6 +320,30 @@ function Profile() {
                 user={user} setUser={setUser}
                 />
             </>
+            }
+            {/* followers and following section */}
+            {showFollowersVar && 
+            <>
+                <div className="changeBack" onClick={() => setShowFollowersVar(false)}></div>
+                <div className="allFollowContainer">
+                    <p className="followLikesTxt">Followers</p>
+                    <div className="followLikeUsers">
+                        {extraUser.followers.length === 0 ? <div className="noFollowLikes">No followers yet</div> : followersHtmlVar}
+                    </div>
+                </div>
+            </>
+            }
+            {showFollowingVar &&
+            <>
+                <div className="changeBack" onClick={() => setShowFollowingVar(false)}></div>
+                <div className="allFollowContainer">
+                    <p className="followLikesTxt">Following</p>
+                    <div className="followLikeUsers">
+                        {extraUser.following.length === 0 ? <div className="noFollowLikes">Following no one</div> : followingHtmlVar}
+                    </div>
+                </div>
+            </>
+
             }
         </div>
     )

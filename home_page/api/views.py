@@ -8,7 +8,10 @@ from create_post.api.serializers import ImagePostSerializer
 @api_view(["GET", "POST"])
 def get_home_posts(request):
     # gets users, that the signed in user is following
-    following = User.objects.filter(id__in=request.data['following'])
+    ids = []
+    for x in request.data['following']:
+        ids.append(x['id'])
+    following = User.objects.filter(id__in=ids)
     all_posts = ImagePost.objects.filter(FK_Image_User__in=following).order_by('-date_created')
     all_posts_serialized = ImagePostSerializer(all_posts, many=True)
-    return Response({'allPosts': all_posts_serialized.data})
+    return Response({'allPosts': all_posts_serialized.data})    

@@ -6,7 +6,9 @@ from django.contrib.auth.models import User
 from .serializers import CommentSerializer
 from user_authentication.api.serializers import UserSerializer
 from profile_app.api.serializers import UserPfpSerializer
+from profile_app.api.serializers import UserProfileSerializer
 from profile_app.models import UserPfp
+from profile_app.models import UserProfile
 from ..models import ImagePost
 from ..models import Comment
 from ..models import Like
@@ -84,8 +86,18 @@ def get_like(request):
     post_selected = ImagePost.objects.get(image=request.data['post_selected'])
     like = Like.objects.filter(FK_Like_Post=post_selected, FK_Like_User=request.user)
     all_likes = Like.objects.filter(FK_Like_Post=post_selected)
+    users_liked = []
+    for x in all_likes:
+        user_data = {}
+        user = x.FK_Like_User
+        user_pfp = UserPfp.objects.get(FK_User_UserPfp=user)
+        user_profile = UserProfile.objects.get(user=user)
+        user_data.update(UserSerializer(user).data)
+        user_data.update(UserPfpSerializer(user_pfp).data)
+        user_data.update(UserProfileSerializer(user_profile).data)
+        users_liked.append(user_data)
     num_of_likes = str(len(all_likes))
     if like:
-        return Response({'liked': 'true', 'num_of_likes': num_of_likes})
+        return Response({'liked': 'true', 'num_of_likes': num_of_likes, 'liker_data': users_liked})
     else:
-        return Response({'liked': 'false', 'num_of_likes': num_of_likes})
+        return Response({'liked': 'false', 'num_of_likes': num_of_likes, 'liker_data': users_liked})

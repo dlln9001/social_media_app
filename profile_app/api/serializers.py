@@ -4,6 +4,8 @@ from ..models import UserProfile
 from ..models import UserPfp
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
+    first_name = serializers.CharField(source='user.first_name', read_only=True)
     class Meta(object):
         model = UserProfile
         fields = '__all__'

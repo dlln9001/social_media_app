@@ -16,12 +16,19 @@ def profile(request):
     user = User.objects.get(username=request.data['user_name'])
     user_profile = user.userprofile
     serializedProfile = UserProfileSerializer(user_profile)
+    # gets follower (of the user) data
     followers = list(user_profile.followers.all())
-    serialized_followers = UserProfileSerializer(followers, many=True) # followers has a list of UserProfile objects, so need to serialized everything in that
-    followers = {'followers': serialized_followers.data}
+    serialized_followers_profile = UserProfileSerializer(followers, many=True) # followers has a list of UserProfile objects, so need to serialized everything in that
+    followers = {'followers': serialized_followers_profile.data}
+    # get following data
+    following = list(user_profile.following.all())
+    serialized_following_profile = UserProfileSerializer(following, many=True)
+    following = {'following': serialized_following_profile.data}
+    # all data combination
     all_data = {}
     all_data.update(serializedProfile.data)
     all_data.update(followers)
+    all_data.update(following)
     return Response({'extraUserData': all_data})
 
 

@@ -16,6 +16,8 @@ function ExpandedPost(props) {
     const [sliced_url, setSliced_url] = useState(props.selectedImgUrl.slice(28))
     const [postLiked, setPostLiked] = useState(false)
     const [numOfLikes, setNumOfLikes] = useState(0)
+    const [showLikes, setShowLikes] = useState(false)
+    const [showLikesHtml, setShowLikesHtml] = useState('')
     const commentRef = useRef(null)
     let isStrangerUser = (props.user.username != user.username)
 
@@ -53,9 +55,9 @@ function ExpandedPost(props) {
                 comments_html.push(
                     <div key={i} className='commentContainer'>
                         <div className='flex'>
-                            <img src={absolute_url} className='commentPfp'/>
+                            <img src={absolute_url} className='commentPfp' onClick={() => window.location.pathname = '/user/' + data.users[i].username}/>
                             <div className='flex'>
-                                <p className='commentUsername'>{data.users[i].username}</p>
+                                <p className='commentUsername' onClick={() => window.location.pathname = '/user/' + data.users[i].username}>{data.users[i].username}</p>
                                 <p className='commentUserText'>{data.comments[i].text}</p>
                             </div>
                         </div>
@@ -187,8 +189,8 @@ function ExpandedPost(props) {
         .then(data => getLike())
     }
 
-    function getLike() {
-        fetch('http://127.0.0.1:8000/post/getlike/', {
+    async function getLike(isGetLikers=false) {
+        let response = await fetch('http://127.0.0.1:8000/post/getlike/', {
             method: 'POST',
             headers: {
                 'Authorization': `Token ${userToken}`,
@@ -198,27 +200,60 @@ function ExpandedPost(props) {
                 post_selected: sliced_url,
             })
         })
-        .then(res => res.json())
-        .then(data => {
-            // data = {
-            //     liked: true,
-            //     num_of_likes: ...,
-            // }
-            // or 
-            // data = {
-            //     liked: false,
-            //     num_of_likes: ...,
-            // }
-            let dataLiked = JSON.parse(data.liked)
-            setPostLiked(dataLiked)
-            if (data.num_of_likes) {
-                setNumOfLikes(data.num_of_likes)
-            }
-            else{
-                setNumOfLikes(0)
-            }
 
-        })
+        // data = {
+        //     liked: true,
+        //     num_of_likes: ...,
+        //     liker_data: [{username: ..., first_name: ..., user_pfp_url: ..., default_pfp: ..., ...}, {...}, {...}]
+        // }
+        // or 
+        // data = {
+        //     liked: false,
+        //     num_of_likes: ...,
+        //     liker_data: ...,
+        // }
+
+        let data = await response.json()
+        let dataLiked = JSON.parse(data.liked)
+        setPostLiked(dataLiked)
+        if (data.num_of_likes) {
+            setNumOfLikes(data.num_of_likes)
+        }
+        else{
+            setNumOfLikes(0)
+        }
+        if (isGetLikers) {
+            return data.liker_data
+        }
+    }
+
+    async function showAllLikes() {
+        let likesHtml = []
+        let liker_data = await getLike(true)
+        for (let i=0; i < liker_data.length; i++) {
+            let absolute_url = 'http://127.0.0.1:8000' + liker_data[i].user_pfp_url
+            if (liker_data[i].default_pfp) {
+                absolute_url = 'http://127.0.0.1:8000/media/images/profile_pictures/Default_pfp.png'
+            }
+            likesHtml.push(
+                <div key={i} className="followLikesContainer">
+                    <img src={absolute_url} alt="" className="followLikesProfilePic" onClick={() => window.location.pathname = '/user/' + liker_data[i].username}/>
+                    <div className="followLikesNamesContainer">
+                        <p className="followLikesUsername" onClick={() => window.location.pathname = '/user/' + liker_data[i].username}>{liker_data[i].username}</p>
+                        <p className="followLikesFirstName">{liker_data[i].first_name}</p>
+                    </div>
+                </div>
+            )
+        }
+
+        if (liker_data.length === 0) {
+            likesHtml.push (
+                <p className='noFollowLikes'>No likes yet</p>
+            )
+        }
+
+        setShowLikesHtml(likesHtml)
+        setShowLikes(true)
     }
     
     return (
@@ -256,9 +291,9 @@ function ExpandedPost(props) {
                     <div style={{marginLeft: '12px'}}>
                         {numOfLikes === '1' 
                         ?
-                        <p className='likeCount'>{numOfLikes} like</p>
+                        <p className='likeCount' onClick={showAllLikes}>{numOfLikes} like</p>
                         :
-                        <p className='likeCount'>{numOfLikes} likes</p>
+                        <p className='likeCount' onClick={showAllLikes}>{numOfLikes} likes</p>
                         }
                         <p className='postDate'>{props.selectedImgDate.getMonth() + 1}/{props.selectedImgDate.getDate()}/{props.selectedImgDate.getFullYear()}</p>
                     </div>
@@ -289,16 +324,30 @@ function ExpandedPost(props) {
                 </div>
             </>
         }
-        {showCommentOptions || props.showImageOptionsVar
+        {showCommentOptions || props.showImageOptionsVar || showLikes 
         ?
         <div className='changeBackCommentOptions' onClick={() => {
             setShowCommentOptions(false)
             props.setShowImageOptionsVar(false)
+            setShowLikes(false)
         }}></div> 
         : 
         <div className="changeBack" onClick={closeImage}></div>
         }
+        {/* show all likers of a post */}
+        {showLikes &&
+            <> 
+            
+            <div className='allLikesContainer'>
+                <p className="followLikesTxt">Likes</p>
+                <div className='followLikeUsers'>
+                    {showLikesHtml}
+                </div>
+            </div>
+            </> 
+        }
         </>
+        
     )
 }
 
